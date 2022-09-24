@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "cprocessing.h"
 
 #define GOL_GRID_COLS 30
@@ -70,6 +69,7 @@ void game_init(void)
 void game_update(void)
 {    
     if (CP_Input_KeyTriggered(KEY_ANY)) {
+        //Invert pause state
         gIsPaused = !gIsPaused;
     }
 
@@ -118,7 +118,7 @@ void game_update(void)
                     }
                 }
                 /*-----------------------------------------------------------*/
-                printf("Row: %d | Col: %d | Neighbours: %d |\n", row, col, count);
+
                 /*SIMULATION LOGIC*/
                 if (gGrids[!gridNo][row][col] == GOL_ALIVE) {
                     if (count < 2 || count > 3) {
@@ -154,6 +154,7 @@ void game_update(void)
                     float cellY = cellHeight * row;
 
                     if (!(mousePos.x < cellX || mousePos.x > cellX + cellWidth || mousePos.y < cellY || mousePos.y > cellY + cellHeight)) {
+                        //Invert cell state
                         gGrids[gridNo][row][col] = !gGrids[gridNo][row][col];
                     }
                 }
