@@ -14,13 +14,12 @@ int gIsPaused;
 int gGrids[GOL_GRID_BUFFERS][GOL_GRID_ROWS][GOL_GRID_COLS];
 int gridNo;
 
+/* Feel free to declare your own variables here */
 float cellWidth;
 float cellHeight;
 
 CP_Color black;
 CP_Color white;
-
-/* Feel free to declare your own variables here */
 
 void game_init(void)
 {
