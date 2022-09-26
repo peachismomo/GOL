@@ -75,8 +75,8 @@ void game_update(void)
     if (!gIsPaused) {
         gridNo = CP_System_GetFrameCount() % 2;
 
-        for (int row = 0; row <= GOL_GRID_ROWS; row++) {
-            for (int col = 0; col <= GOL_GRID_COLS; col++) {
+        for (int row = 0; row < GOL_GRID_ROWS; row++) {
+            for (int col = 0; col < GOL_GRID_COLS; col++) {
 
                 /*NUMBER OF NEIGHBOURS ALIVE*/
                 int neighbours[8];
@@ -119,7 +119,7 @@ void game_update(void)
                 /*-----------------------------------------------------------*/
 
                 /*SIMULATION LOGIC*/
-                if (gGrids[!gridNo][row][col] == GOL_ALIVE) {
+                if (gGrids[!gridNo][row][col]) {
                     if (count < 2 || count > 3) {
                         gGrids[gridNo][row][col] = GOL_DEAD;
                     }
@@ -128,7 +128,7 @@ void game_update(void)
                     }
                 }
 
-                if (gGrids[!gridNo][row][col] == GOL_DEAD)
+                if (!gGrids[!gridNo][row][col])
                 {
                     if (count == 3) {
                         gGrids[gridNo][row][col] = GOL_ALIVE;
@@ -146,15 +146,20 @@ void game_update(void)
         if (CP_Input_MouseTriggered(MOUSE_BUTTON_LEFT)) {
             CP_Vector mousePos = CP_Vector_Set(CP_Input_GetMouseX(), CP_Input_GetMouseY());
 
-            for (int row = 0; row <= GOL_GRID_ROWS; row++) {
-                for (int col = 0; col <= GOL_GRID_COLS; col++) {
+            for (int row = 0; row < GOL_GRID_ROWS; row++) {
+                for (int col = 0; col < GOL_GRID_COLS; col++) {
 
                     float cellX = cellWidth * col;
                     float cellY = cellHeight * row;
 
                     if (!(mousePos.x < cellX || mousePos.x > cellX + cellWidth || mousePos.y < cellY || mousePos.y > cellY + cellHeight)) {
+                        //if (row == 0 || col == 0) {
+                        //    gGrids[gridNo][row][col] = !gGrids[gridNo][row][col];
+                        //}
+                        //else {
                         //Invert cell state
                         gGrids[gridNo][row][col] = !gGrids[gridNo][row][col];
+                        //}
                     }
                 }
             }
@@ -162,12 +167,12 @@ void game_update(void)
     }
 
     /*DRAW DISPLAY TABLE*/
-    for (int row = 0; row <= GOL_GRID_ROWS; row++) {
-        for (int col = 0; col <= GOL_GRID_COLS; col++) {
+    for (int row = 0; row < GOL_GRID_ROWS; row++) {
+        for (int col = 0; col < GOL_GRID_COLS; col++) {
             float cellX = cellWidth * col;
             float cellY = cellHeight * row;
 
-            if (gGrids[gridNo][row][col] == GOL_ALIVE) {
+            if (gGrids[gridNo][row][col]) {
                 CP_Settings_Fill(black);
                 CP_Graphics_DrawRect(cellX, cellY, cellWidth, cellHeight);
                 //update reference table
