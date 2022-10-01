@@ -16,6 +16,7 @@ int gGrids[GOL_GRID_BUFFERS][GOL_GRID_ROWS][GOL_GRID_COLS];
 /* Feel free to declare your own variables here */
 int gridNo;
 
+/* Feel free to declare your own variables here */
 float cellWidth;
 float cellHeight;
 
@@ -117,7 +118,7 @@ void game_update(void)
                 /*-----------------------------------------------------------*/
 
                 /*SIMULATION LOGIC*/
-                if (gGrids[!gridNo][row][col] == GOL_ALIVE) {
+                if (gGrids[!gridNo][row][col]) {
                     if (count < 2 || count > 3) {
                         gGrids[gridNo][row][col] = GOL_DEAD;
                     }
@@ -126,7 +127,7 @@ void game_update(void)
                     }
                 }
 
-                if (gGrids[!gridNo][row][col] == GOL_DEAD)
+                if (!gGrids[!gridNo][row][col])
                 {
                     if (count == 3) {
                         gGrids[gridNo][row][col] = GOL_ALIVE;
@@ -144,8 +145,8 @@ void game_update(void)
         if (CP_Input_MouseTriggered(MOUSE_BUTTON_LEFT)) {
             CP_Vector mousePos = CP_Vector_Set(CP_Input_GetMouseX(), CP_Input_GetMouseY());
 
-            for (int row = 0; row <= GOL_GRID_ROWS; row++) {
-                for (int col = 0; col <= GOL_GRID_COLS; col++) {
+            for (int row = 0; row < GOL_GRID_ROWS; row++) {
+                for (int col = 0; col < GOL_GRID_COLS; col++) {
 
                     float cellX = cellWidth * col;
                     float cellY = cellHeight * row;
@@ -153,6 +154,7 @@ void game_update(void)
                     if (!(mousePos.x < cellX || mousePos.x > cellX + cellWidth || mousePos.y < cellY || mousePos.y > cellY + cellHeight)) {
                         /* Invert cell state */
                         gGrids[gridNo][row][col] = !gGrids[gridNo][row][col];
+                        //}
                     }
                 }
             }
@@ -166,10 +168,20 @@ void game_update(void)
             float cellX = cellWidth * col;
             float cellY = cellHeight * row;
 
-            gGrids[gridNo][row][col] ? CP_Settings_Fill(black) : CP_Settings_Fill(white);
+            if (gGrids[gridNo][row][col] == GOL_ALIVE) {
+                CP_Settings_Fill(black);
+                CP_Graphics_DrawRect(cellX, cellY, cellWidth, cellHeight);
+                //update reference table
+                gGrids[!gridNo][row][col] = GOL_ALIVE;
+            }
+            else
+            {
+                CP_Settings_Fill(white);
+                CP_Graphics_DrawRect(cellX, cellY, cellWidth, cellHeight);
+                //update reference table
+                gGrids[!gridNo][row][col] = GOL_DEAD;
 
-            CP_Graphics_DrawRect(cellX, cellY, cellWidth, cellHeight);
-            gGrids[!gridNo][row][col] = gGrids[gridNo][row][col];
+            }
         }
     }
     /*-----------------------------------------------------------*/
