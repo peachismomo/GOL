@@ -1,4 +1,5 @@
 #include "cprocessing.h"
+#include <stdio.h>
 
 #define GOL_GRID_COLS 30
 #define GOL_GRID_ROWS 30
@@ -67,6 +68,9 @@ void game_init(void)
 
 void game_update(void)
 {    
+    /* Swap display grid and reference grid */
+    gridNo = CP_System_GetFrameCount() % 2;
+
     if (CP_Input_KeyTriggered(KEY_ANY)) {
         /* Invert pause state */
         gIsPaused = !gIsPaused;
@@ -143,7 +147,6 @@ void game_update(void)
 
     else {
         if (CP_Input_MouseTriggered(MOUSE_BUTTON_LEFT)) {
-            CP_Vector mousePos = CP_Vector_Set(CP_Input_GetMouseX(), CP_Input_GetMouseY());
 
             for (int row = 0; row < GOL_GRID_ROWS; row++) {
                 for (int col = 0; col < GOL_GRID_COLS; col++) {
@@ -151,10 +154,9 @@ void game_update(void)
                     float cellX = cellWidth * col;
                     float cellY = cellHeight * row;
 
-                    if (!(mousePos.x < cellX || mousePos.x > cellX + cellWidth || mousePos.y < cellY || mousePos.y > cellY + cellHeight)) {
+                    if (CP_Input_GetMouseX() > cellX && CP_Input_GetMouseX() < cellX + cellWidth && CP_Input_GetMouseY() > cellY && CP_Input_GetMouseY() < cellY + cellHeight) {
                         /* Invert cell state */
                         gGrids[gridNo][row][col] = !gGrids[gridNo][row][col];
-                        //}
                     }
                 }
             }
@@ -168,20 +170,10 @@ void game_update(void)
             float cellX = cellWidth * col;
             float cellY = cellHeight * row;
 
-            if (gGrids[gridNo][row][col] == GOL_ALIVE) {
-                CP_Settings_Fill(black);
-                CP_Graphics_DrawRect(cellX, cellY, cellWidth, cellHeight);
-                //update reference table
-                gGrids[!gridNo][row][col] = GOL_ALIVE;
-            }
-            else
-            {
-                CP_Settings_Fill(white);
-                CP_Graphics_DrawRect(cellX, cellY, cellWidth, cellHeight);
-                //update reference table
-                gGrids[!gridNo][row][col] = GOL_DEAD;
+            gGrids[gridNo][row][col] ? CP_Settings_Fill(black) : CP_Settings_Fill(white);
+            CP_Graphics_DrawRect(cellX, cellY, cellWidth, cellHeight);
 
-            }
+            gGrids[!gridNo][row][col] = gGrids[gridNo][row][col];
         }
     }
     /*-----------------------------------------------------------*/
