@@ -12,6 +12,8 @@
 
 int gIsPaused;
 int gGrids[GOL_GRID_BUFFERS][GOL_GRID_ROWS][GOL_GRID_COLS];
+
+/* Feel free to declare your own variables here */
 int gridNo;
 
 float cellWidth;
@@ -19,8 +21,6 @@ float cellHeight;
 
 CP_Color black;
 CP_Color white;
-
-/* Feel free to declare your own variables here */
 
 void game_init(void)
 {
@@ -50,18 +50,16 @@ void game_init(void)
     gIsPaused = FALSE;
 
     /* Initialization of your other variables here */
-    //CP_System_SetFrameRate(2);
     CP_Settings_StrokeWeight(0.8f);
     CP_Settings_RectMode(CP_POSITION_CORNER);
 
     black = CP_Color_Create(0, 0, 0, 255);
     white = CP_Color_Create(255, 255, 255, 255);
 
-    //sGrids[gridNo] => display grid
-    //sGrids[!gridNo] => refernce grid
+    /* gridNo => display grid | !gridNo => reference grid */
     gridNo = 1;
 
-    //Get height and width of each cell
+    /* Get height and width of each cell */
     cellWidth = CP_System_GetWindowWidth() / (float)GOL_GRID_ROWS;
     cellHeight = CP_System_GetWindowHeight() / (float)GOL_GRID_COLS;
 }
@@ -69,18 +67,17 @@ void game_init(void)
 void game_update(void)
 {    
     if (CP_Input_KeyTriggered(KEY_ANY)) {
-        //Invert pause state
+        /* Invert pause state */
         gIsPaused = !gIsPaused;
     }
 
     if (!gIsPaused) {
-        gridNo = CP_System_GetFrameCount() % 2;
-
         for (int row = 0; row <= GOL_GRID_ROWS; row++) {
             for (int col = 0; col <= GOL_GRID_COLS; col++) {
 
                 /*NUMBER OF NEIGHBOURS ALIVE*/
                 int neighbours[8];
+
                 if (row > 0) {
                     neighbours[0] = gGrids[!gridNo][row - 1][col + 1];
                     neighbours[3] = gGrids[!gridNo][row - 1][col];
@@ -154,7 +151,7 @@ void game_update(void)
                     float cellY = cellHeight * row;
 
                     if (!(mousePos.x < cellX || mousePos.x > cellX + cellWidth || mousePos.y < cellY || mousePos.y > cellY + cellHeight)) {
-                        //Invert cell state
+                        /* Invert cell state */
                         gGrids[gridNo][row][col] = !gGrids[gridNo][row][col];
                     }
                 }
@@ -165,23 +162,14 @@ void game_update(void)
     /*DRAW DISPLAY TABLE*/
     for (int row = 0; row <= GOL_GRID_ROWS; row++) {
         for (int col = 0; col <= GOL_GRID_COLS; col++) {
+
             float cellX = cellWidth * col;
             float cellY = cellHeight * row;
 
-            if (gGrids[gridNo][row][col] == GOL_ALIVE) {
-                CP_Settings_Fill(black);
-                CP_Graphics_DrawRect(cellX, cellY, cellWidth, cellHeight);
-                //update reference table
-                gGrids[!gridNo][row][col] = GOL_ALIVE;
-            }
-            else
-            {
-                CP_Settings_Fill(white);
-                CP_Graphics_DrawRect(cellX, cellY, cellWidth, cellHeight);
-                //update reference table
-                gGrids[!gridNo][row][col] = GOL_DEAD;
+            gGrids[gridNo][row][col] ? CP_Settings_Fill(black) : CP_Settings_Fill(white);
 
-            }
+            CP_Graphics_DrawRect(cellX, cellY, cellWidth, cellHeight);
+            gGrids[!gridNo][row][col] = gGrids[gridNo][row][col];
         }
     }
     /*-----------------------------------------------------------*/
