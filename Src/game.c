@@ -58,23 +58,19 @@ void game_init(void)
     black = CP_Color_Create(0, 0, 0, 255);
     white = CP_Color_Create(255, 255, 255, 255);
 
-    /* gridNo => display grid | !gridNo => reference grid */
-    gridNo = 1;
-
     /* Get height and width of each cell */
     cellWidth = CP_System_GetWindowWidth() / (float)GOL_GRID_ROWS;
     cellHeight = CP_System_GetWindowHeight() / (float)GOL_GRID_COLS;
 }
 
 void game_update(void)
-{    
+{
     /* Swap display grid and reference grid */
-    gridNo = CP_System_GetFrameCount() % 2;
-
-    if (CP_Input_KeyTriggered(KEY_ANY)) {
-        /* Invert pause state */
-        gIsPaused = !gIsPaused;
-    }
+    gridNo = (CP_System_GetFrameCount() % 2);
+    /* Frame 1: gridNo = 1, which aligns with gridNo => display grid | !gridNo => reference grid */
+    
+    /* Invert pause state */
+    if (CP_Input_KeyTriggered(KEY_ANY)) gIsPaused = !gIsPaused;
 
     if (!gIsPaused) {
         for (int row = 0; row <= GOL_GRID_ROWS; row++) {
@@ -83,6 +79,7 @@ void game_update(void)
                 /*NUMBER OF NEIGHBOURS ALIVE*/
                 int neighbours[8];
 
+                /* Check if cell in reference grid (!gridNo) has neighbours*/
                 if (row > 0) {
                     neighbours[0] = gGrids[!gridNo][row - 1][col + 1];
                     neighbours[3] = gGrids[!gridNo][row - 1][col];
@@ -147,7 +144,6 @@ void game_update(void)
 
     else {
         if (CP_Input_MouseTriggered(MOUSE_BUTTON_LEFT)) {
-
             for (int row = 0; row < GOL_GRID_ROWS; row++) {
                 for (int col = 0; col < GOL_GRID_COLS; col++) {
 
