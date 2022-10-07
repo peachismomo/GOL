@@ -1,5 +1,4 @@
 #include "cprocessing.h"
-#include <stdio.h>
 
 #define GOL_GRID_COLS 30
 #define GOL_GRID_ROWS 30
