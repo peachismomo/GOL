@@ -1,4 +1,5 @@
 #include "cprocessing.h"
+#include <stdio.h>
 
 #define GOL_GRID_COLS 30
 #define GOL_GRID_ROWS 30
@@ -69,7 +70,8 @@ void game_update(void)
     /* Frame 1: gridNo = 1, which aligns with gridNo => display grid | !gridNo => reference grid */
     
     /* Invert pause state */
-    if (CP_Input_KeyTriggered(KEY_ANY)) gIsPaused = !gIsPaused;
+    if (CP_Input_KeyTriggered(KEY_ANY))
+        gIsPaused = !gIsPaused;
 
     if (!gIsPaused) {
         for (int row = 0; row <= GOL_GRID_ROWS; row++) {
